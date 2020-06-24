@@ -1,6 +1,7 @@
 import pool from "../database";
 import 'dotenv/config';
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 const executeQuery = (sql, params = []) => {
     return new Promise((resolve, reject) => {
@@ -42,9 +43,35 @@ const verifyTokenMiddleWare = (req, res, next) => {
     }
 }
 
+const displayMessage = (res, status=200, message = 'Operation Sucessful', data) => {
+        // console.log(data);
+        if(data)
+            return res.status(status).send({
+                message,
+                data
+            })
+        return res.status(status).send({
+            message,
+        })
+}
+
+const hashPassword = (payload) => {
+    const hash = bcrypt.hashSync(payload, 10);
+    return hash;
+}
+
+const isPasswordEqualHashedPassword = (hashedPassword, password) => {
+   const isEqual = bcrypt.compareSync(password, hashedPassword);
+
+   return isEqual;
+}
+
 export {
     executeQuery,
     assignToken,
     verifyToken,
-    verifyTokenMiddleWare
+    verifyTokenMiddleWare,
+    displayMessage,
+    hashPassword,
+    isPasswordEqualHashedPassword
 }
