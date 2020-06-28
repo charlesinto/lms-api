@@ -1,4 +1,4 @@
-import { displayMessage, hashPassword, executeQuery, assignToken } from "../helper"
+import { displayMessage, hashPassword, executeQuery, assignToken, isPasswordEqualHashedPassword } from "../helper"
 
 const createUser = async (req, res) => {
     try{
@@ -21,7 +21,7 @@ const createUser = async (req, res) => {
 
         const userid = another[0].id;
         
-        const token = assignToken({userid, email, firstName, lastName, userName, roleid})
+        const token = assignToken({userid, email, firstName, lastName,schoolId, userName, roleid})
 
         if(response[0][0].Message === 'Operation Success'){
             return displayMessage(res, 201,'user created successfully', { token, data: {firstName, lastName, email, userName, phoneNumber}} )
@@ -34,6 +34,28 @@ const createUser = async (req, res) => {
     }
 }
 
+const loginUser = async (req, res) => {
+    try{
+        const { userId, password} = req.body;
+        const response = await executeQuery('call lms_get_user_profile(?);', [userId]);
+        if(response[0][0].Message === 'No User found')
+            return displayMessage(res, 404, 'No User account found')
+        const hashedPassword = response[0][0].password;
+        if(!isPasswordEqualHashedPassword(hashedPassword, password))
+           return  displayMessage(res, 404, 'Wrong Email and Password combination')
+        const {id, email, firstName, lastName,schoolId, userName, roleid} = response[0][0];
+        const token = assignToken({ email, firstName, lastName,schoolId, userName,id, roleid})
+        return displayMessage(res, 200, 'Login Successful', {
+            token,
+            data: response[0]
+        })
+    }catch(error){
+        console.error(error);
+        return displayMessage(res, 'Some error were encountered', error)
+    }
+}
+
 export {
-    createUser
+    createUser,
+    loginUser
 }

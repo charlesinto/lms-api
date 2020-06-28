@@ -1,4 +1,4 @@
-import { userSchema } from "../model/user";
+import { userSchema, userLoginUserSchema } from "../model/user";
 import { displayMessage } from "../helper";
 import Joi from "@hapi/joi";
 
@@ -14,7 +14,19 @@ const validateUserParams = (req, res, next) => {
     }
 }
 
+const validateLoginParams = (req, res, next) => {
+    try{
+        const {error } = userLoginUserSchema.validate(req.body)
+        if(error)
+            return displayMessage(res, 400, 'Bad Request', error)
+        next()
+    }catch(error){
+        return displayMessage(res, 500, 'Some errors were encountered', error)
+    }
+}
+
 
 export {
-    validateUserParams
+    validateUserParams,
+    validateLoginParams
 }

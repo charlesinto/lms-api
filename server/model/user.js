@@ -11,6 +11,13 @@ const userSchema = Joi.object({
     password: Joi.string().required()
 })
 
+
+const userLoginUserSchema = Joi.object({
+    userId: Joi.string().required(),
+    password: Joi.string().required()
+})
+
 export {
-    userSchema
+    userSchema,
+    userLoginUserSchema
 }
