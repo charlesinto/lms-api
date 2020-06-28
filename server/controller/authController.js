@@ -14,7 +14,7 @@ const createUser = async (req, res) => {
         // 'phoneNumber',
         // 'token',
         
-        const response = await executeQuery(`call lms_signup_user(?,?,?,?,?,?,?,?,?,?,?,?)`, [firstName, lastName, email, userName, phoneNumber,'',
+        const response = await executeQuery(`call lms_signup_user(?,?,?,?,?,?,?,?,?,?,?)`, [firstName, lastName, email, phoneNumber,'',
                              roleid,1,1,1, schoolId, hashedPassword])
         
         const another = await executeQuery('select * from users where emailAddress = ? or username = ?', [email, userName]);
