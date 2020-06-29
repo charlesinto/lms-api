@@ -2,7 +2,7 @@ import express from 'express';
 import cors from "cors";
 import bodyParser from "body-parser";
 import authRoute from "./routes/authRoute";
-
+import studentRoute from './routes/studentRoute'
 
 const app = express();
 
@@ -12,6 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use('/api/v1/user', authRoute)
+
+app.use('/api/v1/auth/student', studentRoute)
 
 
 const PORT = process.env.PORT || 4000

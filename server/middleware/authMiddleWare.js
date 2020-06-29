@@ -1,6 +1,5 @@
 import { userSchema, userLoginUserSchema } from "../model/user";
 import { displayMessage } from "../helper";
-import Joi from "@hapi/joi";
 
 
 const validateUserParams = (req, res, next) => {

@@ -46,9 +46,10 @@ const loginUser = async (req, res) => {
         const {id, email, firstName, lastName,schoolId, userName, roleid} = response[0][0];
         const token = assignToken({ email, firstName, lastName,schoolId, userName,id, roleid})
         await executeQuery('call lms_login(?, ?)', [id, token])
+        const response2 = await executeQuery('call lms_get_user_profile(?);', [userId]);
         return displayMessage(res, 200, 'Login Successful', {
             token,
-            data: response[0]
+            data: response2[0]
         })
     }catch(error){
         console.error(error);
