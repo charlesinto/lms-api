@@ -45,17 +45,29 @@ const loginUser = async (req, res) => {
            return  displayMessage(res, 404, 'Wrong Email and Password combination')
         const {id, email, firstName, lastName,schoolId, userName, roleid} = response[0][0];
         const token = assignToken({ email, firstName, lastName,schoolId, userName,id, roleid})
+        await executeQuery('call lms_login(?, ?)', [id, token])
         return displayMessage(res, 200, 'Login Successful', {
             token,
             data: response[0]
         })
     }catch(error){
         console.error(error);
-        return displayMessage(res, 'Some error were encountered', error)
+        return displayMessage(res,500, 'Some error were encountered', error)
+    }
+}
+
+const logoutUser = async (req, res) => {
+    try{
+        await executeQuery('call lms_logout(?);',[req.user.id])
+        return displayMessage(res,200, 'User logout successfully')
+    }catch(error){
+        console.error(error);
+        return displayMessage(res,500, 'Some error were encountered', error)
     }
 }
 
 export {
     createUser,
-    loginUser
+    loginUser,
+    logoutUser
 }
