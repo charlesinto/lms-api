@@ -15,7 +15,7 @@ const createUser = async (req, res) => {
         // 'token',
         
         const response = await executeQuery(`call lms_signup_user(?,?,?,?,?,?,?,?,?,?,?)`, [firstName, lastName, email, phoneNumber,'',
-                             roleid,1,1,1, schoolId, hashedPassword])
+                             1,roleid,1,1, schoolId, hashedPassword])
         
         const another = await executeQuery('select * from users where emailAddress = ? or username = ?', [email, userName]);
 
@@ -43,8 +43,8 @@ const loginUser = async (req, res) => {
         const hashedPassword = response[0][0].password;
         if(!isPasswordEqualHashedPassword(hashedPassword, password))
            return  displayMessage(res, 404, 'Wrong Email and Password combination')
-        const {id, email, firstName, lastName,schoolId, userName, roleid} = response[0][0];
-        const token = assignToken({ email, firstName, lastName,schoolId, userName,id, roleid})
+        const {id, emailAddress, firstName, lastName,schoolId, username, roleid} = response[0][0];
+        const token = assignToken({ emailAddress, firstName, lastName,schoolId, username,id, roleid})
         await executeQuery('call lms_login(?, ?)', [id, token])
         const response2 = await executeQuery('call lms_get_user_profile(?);', [userId]);
         return displayMessage(res, 200, 'Login Successful', {

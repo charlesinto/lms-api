@@ -24,7 +24,8 @@ const createStudent = async (req, res) => {
             
             
         }else{
-            const response2 = await executeQuery('call lms_fetch_role_access(?,?,?)', [req.user.id, req.user.schoolId, 'student'])
+            console.log(req.user.roleid)
+            const response2 = await executeQuery(`select * from lms_role_access  where roleid = ? and schoolid = ? and  pageid in (SELECT id FROM lms_module  where module = ?);`, [req.user.roleid, req.user.schoolId, 'student'])
             return displayMessage(res, 200, 'Success', response2)
         }
 
